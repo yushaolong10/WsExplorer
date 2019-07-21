@@ -1,0 +1,19 @@
+cluster = "100"
+env = "dev"
+debug = true
+
+[log]
+file_path = "./log/ws.run.log"
+
+[http]
+addr = ":8080"
+
+[hub]
+host = "127.0.0.1:8180"
+
+[connection]
+group_count = 1000
+max_conn_user_count = 1000000
+
+[routine]
+max_go_routine_count = 10000
