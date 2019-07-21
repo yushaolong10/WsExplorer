@@ -35,7 +35,7 @@ func EpollReadStart(conn *WsConnInfo, timeout time.Duration, f func(ctx context.
 	return eplloer.Start(conn.EpollFd, func(event netpoll.Event) {
 		err := routine.Start(context.Background(), func(t *routine.Task) (err error) {
 			if event&netpoll.EventReadHup != 0 {
-				if err := conn.Close(); err != nil {
+				if err := DeleteWsConnFromPool(conn.UniqId); err != nil {
 					logger.Error("[EpollReadStart] ws conn close error. uniqId:%d,taskId:%s,err:%s", conn.UniqId, t.GetTaskId(), err.Error())
 				}
 				return

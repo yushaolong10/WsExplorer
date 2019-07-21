@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	configFile = flag.String("c", "./conf/websocket.toml.dev", "config file path")
+	configFile = flag.String("c", "./conf/ws.toml.dev", "config file path")
 )
 
 func main() {
@@ -26,18 +26,20 @@ func main() {
 		fmt.Printf("logger load err:%s", err.Error())
 		return
 	}
-	fmt.Printf("logger load success.")
+	fmt.Println("logger load success.")
 
 	if err := connection.Init(config.Global.Conn.GroupCount, config.Global.Conn.MaxConnUserCount); err != nil {
 		fmt.Printf("connection manager init err:%s", err.Error())
 		return
 	}
-	fmt.Printf("connection manager init success.")
+	fmt.Println("connection manager init success.")
 	if err := routine.Init(config.Global.Routine.MaxGoRoutineCount); err != nil {
 		fmt.Printf("routine init err:%s", err.Error())
 		return
 	}
-	fmt.Printf("routine init success.")
+	fmt.Println("routine init success.")
 	//run
+	fmt.Println("websocket server start...")
+	logger.Info("websocket server start to work")
 	server.Run()
 }

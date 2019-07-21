@@ -1,46 +1,40 @@
 package logger
 
 import (
-	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"time"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var logger *zap.Logger
-var sugar *zap.SugaredLogger
+var (
+	logger *zap.Logger
+	sugar  *zap.SugaredLogger
+)
 
-func Init(filePath string, isDebug bool) (err error) {
-	cfg := zap.Config{
-		Encoding: "json",
-		EncoderConfig: zapcore.EncoderConfig{
-			TimeKey:       "date",
-			LevelKey:      "level",
-			NameKey:       "logger",
-			CallerKey:     "caller",
-			MessageKey:    "msg",
-			StacktraceKey: "trace",
-			LineEnding:    zapcore.DefaultLineEnding,
-			EncodeLevel:   zapcore.LowercaseLevelEncoder,
-			EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-				enc.AppendString(fmt.Sprintf("%d-%d-%d %d:%d:%d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second()))
-			},
-			EncodeDuration: zapcore.SecondsDurationEncoder,
-			EncodeCaller:   zapcore.ShortCallerEncoder,
-		},
-		OutputPaths:      []string{filePath},
-		ErrorOutputPaths: []string{filePath},
-	}
+func Init(filePath string, isDebug bool) error {
+	w := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   filePath, // ⽇志⽂件路径
+		MaxSize:    4096,     // megabytes
+		MaxBackups: 3,        // 最多保留3个备份
+		MaxAge:     7,        //days
+		Compress:   true,     // 是否压缩 disabled by default
+	})
+	var level zapcore.Level
 	if isDebug {
-		cfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
-		cfg.Development = true
+		level = zap.DebugLevel
 	} else {
-		cfg.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
-		cfg.Development = false
+		level = zap.InfoLevel
 	}
-	logger, err = cfg.Build()
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	core := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		w,
+		level,
+	)
+	logger := zap.New(core)
 	sugar = logger.Sugar()
-	return
+	return nil
 }
 
 func Close() (err error) {
