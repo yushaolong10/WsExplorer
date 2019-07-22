@@ -54,7 +54,10 @@ func (t *Task) execute() (err error) {
 			logger.Error("[Task.Execute] #PANIC# task execute panic. taskId:%s, panic:%v, stack:%s", t.taskId, err, string(debug.Stack()))
 			err = fmt.Errorf("panic err %v", pErr)
 		}
-		logger.Info("[Task.Execute] task execute over. taskId:%d, timeUsed:%v", t.taskId, time.Since(begin))
+		if err != nil {
+			logger.Error("[Task.Execute] task execute error. taskId:%s, err:%s", t.taskId, err.Error())
+		}
+		logger.Info("[Task.Execute] task execute over. taskId:%s, timeUsed:%v", t.taskId, time.Since(begin))
 	}(time.Now())
 	select {
 	case <-t.ctx.Done():

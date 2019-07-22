@@ -23,8 +23,8 @@ func CheckAndGetInfoByToken(token string) (*Identifier, error) {
 	if len(slice) != 3 {
 		return nil, fmt.Errorf("token split length not equal 3")
 	}
-	uniqId, _ := strconv.Atoi(slice[2])
-	actor, _ := strconv.Atoi(slice[3])
+	uniqId, _ := strconv.Atoi(slice[1])
+	actor, _ := strconv.Atoi(slice[2])
 	i := Identifier{
 		UniqId: uniqId,
 		Actor:  actor,

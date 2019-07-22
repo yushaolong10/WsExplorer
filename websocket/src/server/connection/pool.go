@@ -110,8 +110,16 @@ type ConnGroup struct {
 
 func (g *ConnGroup) AddWsConn(conn *WsConnInfo) error {
 	g.mux.Lock()
+	old,ok := g.list[conn.UniqId]
 	g.list[conn.UniqId] = conn
 	g.mux.Unlock()
+	if !ok {
+		return nil
+	}
+	if err := old.Close(); err != nil {
+		logger.Error("[AddWsConn] old conn close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+	}
+	logger.Debug("[AddWsConn] old conn close. uniqId:%d", conn.UniqId)
 	return nil
 }
 
@@ -132,11 +140,12 @@ func (g *ConnGroup) DeleteWsConn(uniqId int) error {
 		delete(g.list, uniqId)
 	}
 	g.mux.Unlock()
+	if !ok {
+		return fmt.Errorf("not found conn in group. uniqId:%d,groupId:%d", uniqId, g.GroupId)
+	}
 	if err := conn.Close(); err != nil {
 		logger.Error("[DeleteWsConn] conn close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 	}
-	if ok {
-		return nil
-	}
-	return fmt.Errorf("not found conn in group. uniqId:%d,groupId:%d", uniqId, g.GroupId)
+	logger.Debug("[DeleteWsConn] delete conn close. uniqId:%d", conn.UniqId)
+	return nil
 }

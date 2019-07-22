@@ -73,10 +73,7 @@ func (conn *WsConnInfo) Send(data []byte) error {
 
 func (conn *WsConnInfo) Close() (err error) {
 	if err = EpollStop(conn); err != nil {
-		logger.Error("[Close] eplloer stop fd error. uniqId:%d, err:%s", conn.UniqId, err.Error())
-	}
-	if err = conn.EpollFd.Close(); err != nil {
-		logger.Error("[Close] epollfd close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+		logger.Error("[Close] eplloer stop error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 	}
 	if err = conn.WsConn.Close(); err != nil {
 		logger.Error("[Close] ws conn close error. uniqId:%d, err:%s", conn.UniqId, err.Error())

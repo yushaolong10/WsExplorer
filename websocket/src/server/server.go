@@ -24,6 +24,9 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:    4096,
 	WriteBufferSize:   4096,
 	EnableCompression: true,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {

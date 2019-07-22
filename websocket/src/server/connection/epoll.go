@@ -33,14 +33,14 @@ func IsNetPollDegrade() bool {
 
 func EpollReadStart(conn *WsConnInfo, timeout time.Duration, f func(ctx context.Context) error) error {
 	return eplloer.Start(conn.EpollFd, func(event netpoll.Event) {
-		err := routine.Start(context.Background(), func(t *routine.Task) (err error) {
+		ctx, _ := context.WithTimeout(context.Background(), timeout)
+		err := routine.Start(ctx, func(t *routine.Task) (err error) {
 			if event&netpoll.EventReadHup != 0 {
 				if err := DeleteWsConnFromPool(conn.UniqId); err != nil {
 					logger.Error("[EpollReadStart] ws conn close error. uniqId:%d,taskId:%s,err:%s", conn.UniqId, t.GetTaskId(), err.Error())
 				}
 				return
 			}
-			ctx, _ := context.WithTimeout(context.Background(), timeout)
 			err = f(ctx)
 			//resume
 			if err = eplloer.Resume(conn.EpollFd); err != nil {
@@ -55,5 +55,14 @@ func EpollReadStart(conn *WsConnInfo, timeout time.Duration, f func(ctx context.
 }
 
 func EpollStop(conn *WsConnInfo) error {
-	return eplloer.Stop(conn.EpollFd)
+	if conn.EpollFd == nil {
+		return nil
+	}
+	if err := eplloer.Stop(conn.EpollFd); err != nil {
+		logger.Error("[EpollStop] eplloer stop fd error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+	}
+	if err := conn.EpollFd.Close(); err != nil {
+		logger.Error("[EpollStop] epollfd close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+	}
+	return nil
 }

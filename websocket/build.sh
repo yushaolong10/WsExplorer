@@ -4,7 +4,10 @@ program="ws_server"
 
 export GOPATH=`pwd`
 
+if [ -d output ]; then
 rm -rf output
+fi
+
 echo "begin build..."
 go build -o ./$program src/main.go
 
