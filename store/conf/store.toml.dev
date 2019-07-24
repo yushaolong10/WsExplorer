@@ -1,0 +1,20 @@
+cluster = "100"
+env = "dev"
+debug = true
+
+[log]
+file_path = "./log/store.run.log"
+
+[tcp]
+addr = ":8112"
+
+[routine]
+max_go_routine_count = 50000
+
+[store]
+key_max_len = 32
+val_max_len = 8
+split_max_depth = 3
+
+[raft]
+enable = true
