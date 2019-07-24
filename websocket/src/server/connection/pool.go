@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func InitPool(groupCount, maxConnCount int) error {
+func initPool(groupCount, maxConnCount int) error {
 	if groupCount < 1 {
 		groupCount = 1
 	}

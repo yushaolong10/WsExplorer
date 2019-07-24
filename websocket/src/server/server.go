@@ -68,7 +68,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Error("[wsHandler] ws conn add pool error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
 		return
 	}
-	if err := connection.MonitorWsConn(wsconn); err != nil {
+	if err := connection.Monitor(wsconn); err != nil {
 		errMonitor(w)
 		logger.Error("[wsHandler] ws conn monitor error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
 		return

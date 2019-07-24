@@ -33,7 +33,7 @@ func main() {
 		return
 	}
 	fmt.Println("routine init success.")
-	if err := connection.InitEpoller(); err != nil {
+	if err := connection.Init(); err != nil {
 		fmt.Printf("epoll init err:%s", err.Error())
 		return
 	}

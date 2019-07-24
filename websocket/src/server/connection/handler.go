@@ -10,6 +10,6 @@ import (
 func HandleRead(ctx context.Context, conn *WsConnInfo, message []byte) error {
 	logger.Info("get user msg. uniqId:%d, msg:%s", conn.UniqId, string(message))
 	resp := fmt.Sprintf("server resp:%s", string(message))
-	conn.Send([]byte(resp))
+	conn.Write([]byte(resp))
 	return nil
 }

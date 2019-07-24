@@ -10,15 +10,22 @@ import (
 	"time"
 )
 
-func HandleConn(netConn net.Conn) {
+func Init() error {
+	initEpoller()
+	return nil
+}
+
+func Handle(netConn net.Conn) {
 	conn := &storeConn{netConn: netConn}
-	if IsSrvDegrade() {
-		err := routine.Start(context.Background(), func(t *routine.Task) (err error) {
+	if isNetDegrade() {
+		logger.Info("[Handle] net is degrade, use go-routine.")
+		ctx,_ := context.WithTimeout(context.Background(), time.Second)
+		err := routine.Start(ctx, func(t *routine.Task) (err error) {
 			degradeProcess(conn)
 			return nil
 		})
 		if err != nil {
-			logger.Error("[handleConn] routine start error.err:%s", err.Error())
+			logger.Error("[Handle] routine start error.err:%s", err.Error())
 		}
 		return
 	}
@@ -27,12 +34,12 @@ func HandleConn(netConn net.Conn) {
 		msg, err := conn.Read()
 		if err != nil {
 			conn.Close()
-			logger.Info("[handleConn] rend conn msg error. err:%s", err.Error())
+			logger.Info("[Handle] rend conn msg error. err:%s", err.Error())
 			return err
 		}
 		result, err := store.Execute(msg)
 		if err != nil {
-			logger.Error("[handleConn] store execute error. err:%s", err.Error())
+			logger.Error("[Handle] store execute error. err:%s", err.Error())
 			return err
 		}
 		conn.Write(result)

@@ -62,17 +62,17 @@ func (conn *WsConnInfo) Read() ([]byte, error) {
 	return message, nil
 }
 
-func (conn *WsConnInfo) Send(data []byte) error {
+func (conn *WsConnInfo) Write(data []byte) error {
 	conn.WsConn.SetWriteDeadline(time.Now().Add(wsWriteTimeOut))
 	if err := conn.WsConn.WriteMessage(websocket.TextMessage, data); err != nil {
-		logger.Error("[Send] ws conn write error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+		logger.Error("[Write] ws conn write error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 		return err
 	}
 	return nil
 }
 
 func (conn *WsConnInfo) Close() (err error) {
-	if err = EpollStop(conn); err != nil {
+	if err = epollStop(conn); err != nil {
 		logger.Error("[Close] eplloer stop error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 	}
 	if err = conn.WsConn.Close(); err != nil {

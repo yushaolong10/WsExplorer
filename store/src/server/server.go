@@ -21,6 +21,6 @@ func Listen(addr string) error {
 			continue
 		}
 		//handle each connect
-		connection.HandleConn(conn)
+		connection.Handle(conn)
 	}
 }
