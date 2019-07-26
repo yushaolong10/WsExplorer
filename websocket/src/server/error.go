@@ -2,14 +2,14 @@ package server
 
 import (
 	"lib/json"
-	"lib/protocols"
-	"logger"
+	"lib/logger"
+	"protocol"
 	"net/http"
 )
 
 func errNeedToken(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-	resp := protocols.DefError(100001, "need token.")
+	resp := protocol.DefError(100001, "need token.")
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {
@@ -19,7 +19,7 @@ func errNeedToken(w http.ResponseWriter) {
 
 func errPassport(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-	resp := protocols.DefError(100002, "token invalid.")
+	resp := protocol.DefError(100002, "token invalid.")
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {
@@ -29,7 +29,7 @@ func errPassport(w http.ResponseWriter) {
 
 func errUpgrade(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-	resp := protocols.DefError(100003, "ws conn upgrade err.")
+	resp := protocol.DefError(100003, "ws conn upgrade err.")
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {
@@ -39,7 +39,7 @@ func errUpgrade(w http.ResponseWriter) {
 
 func errAddPool(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-	resp := protocols.DefError(100004, "ws conn add pool err.")
+	resp := protocol.DefError(100004, "ws conn add pool err.")
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {
@@ -49,7 +49,7 @@ func errAddPool(w http.ResponseWriter) {
 
 func errMonitor(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-	resp := protocols.DefError(100005, "ws conn monitor err.")
+	resp := protocol.DefError(100005, "ws conn monitor err.")
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {

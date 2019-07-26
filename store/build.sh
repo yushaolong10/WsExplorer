@@ -1,6 +1,6 @@
 #!/bin/bash
 
-program="store"
+program="store_server"
 
 export GOPATH=`pwd`
 

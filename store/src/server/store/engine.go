@@ -2,7 +2,7 @@ package store
 
 import (
 	"fmt"
-	"logger"
+	"lib/logger"
 )
 
 const (

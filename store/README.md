@@ -4,5 +4,5 @@
 ```
 bash build.sh
 cd output
-./bin/store
+./bin/store_server
 ```

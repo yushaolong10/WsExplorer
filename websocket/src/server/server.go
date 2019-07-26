@@ -3,8 +3,8 @@ package server
 import (
 	"config"
 	"github.com/gorilla/websocket"
+	"lib/logger"
 	"lib/passport"
-	"logger"
 	"net/http"
 	"runtime/debug"
 	"server/connection"
@@ -41,8 +41,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		errNeedToken(w)
 		return
 	}
-	//TODO mock token
-	token = "wsconnsecret:27:1"
+	//token = "wsconnsecret:27:1"
 	identifier, err := passport.CheckAndGetInfoByToken(token)
 	if err != nil {
 		errPassport(w)

@@ -2,7 +2,7 @@ package connection
 
 import (
 	"fmt"
-	"logger"
+	"lib/logger"
 	"sync"
 )
 
@@ -110,7 +110,7 @@ type ConnGroup struct {
 
 func (g *ConnGroup) AddWsConn(conn *WsConnInfo) error {
 	g.mux.Lock()
-	old,ok := g.list[conn.UniqId]
+	old, ok := g.list[conn.UniqId]
 	g.list[conn.UniqId] = conn
 	g.mux.Unlock()
 	if !ok {
@@ -120,6 +120,7 @@ func (g *ConnGroup) AddWsConn(conn *WsConnInfo) error {
 		logger.Error("[AddWsConn] old conn close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 	}
 	logger.Debug("[AddWsConn] old conn close. uniqId:%d", conn.UniqId)
+	//client.NewStoreClient(config.Global.Store.Host)
 	return nil
 }
 

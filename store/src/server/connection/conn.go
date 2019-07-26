@@ -3,8 +3,9 @@ package connection
 import (
 	"fmt"
 	"github.com/mailru/easygo/netpoll"
-	"logger"
+	"lib/logger"
 	"net"
+	"time"
 )
 
 type storeConn struct {
@@ -24,6 +25,14 @@ func (sc *storeConn) Read() ([]byte, error) {
 func (sc *storeConn) Write(buf []byte) error {
 	_, err := sc.netConn.Write(buf)
 	return err
+}
+
+func (sc *storeConn) SetReadDeadline(t time.Time) error {
+	return sc.netConn.SetReadDeadline(t)
+}
+
+func (sc *storeConn) SetWriteDeadline(t time.Time) error {
+	return sc.netConn.SetWriteDeadline(t)
 }
 
 func (sc *storeConn) Close() error {

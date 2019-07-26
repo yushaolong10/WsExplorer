@@ -22,6 +22,7 @@ type wsConfig struct {
 	Debug   bool        `toml:"debug"`
 	Env     string      `toml:"env"`
 	Http    httpConf    `toml:"http"`
+	Store   storeConf   `toml:"store"`
 	Log     logConf     `toml:"log"`
 	Conn    connConf    `toml:"connection"`
 	Routine routineConf `toml:"routine"`
@@ -42,4 +43,8 @@ type connConf struct {
 
 type routineConf struct {
 	MaxGoRoutineCount int `toml:"max_go_routine_count"`
+}
+
+type storeConf struct {
+	Host []string `json:"host"`
 }

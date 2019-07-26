@@ -1,0 +1,15 @@
+cluster = "100"
+env = "dev"
+debug = true
+
+[log]
+file_path = "./log/hub.run.log"
+
+[grpc]
+addr = ":8222"
+
+[routine]
+max_go_routine_count = 50000
+
+[store]
+host = ["127.0.0.1:8810"]

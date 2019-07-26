@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/mailru/easygo/netpoll"
-	"logger"
+	"lib/logger"
 	"time"
 )
 

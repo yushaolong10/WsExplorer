@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+
+package hub;
+
+
+service HubCenter {
+    rpc SendWsRawByte (WsRequest) returns (HubReply) {}
+    rpc SendAppData (AppRequest) returns (HubReply) {}
+}
+
+//ws request
+message WsRequest {
+  string request_id = 1;
+  int64 from_id = 2;
+  bytes data = 3;
+}
+
+//ws response
+message HubReply {
+  string request_id = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+//app request
+message AppRequest {
+    string request_id = 1;
+    int64 to_id = 2;
+    bytes data = 3;
+}

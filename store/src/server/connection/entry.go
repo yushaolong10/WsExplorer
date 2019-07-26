@@ -3,7 +3,7 @@ package connection
 import (
 	"context"
 	"github.com/mailru/easygo/netpoll"
-	"logger"
+	"lib/logger"
 	"net"
 	"server/routine"
 	"server/store"
@@ -19,7 +19,7 @@ func Handle(netConn net.Conn) {
 	conn := &storeConn{netConn: netConn}
 	if isNetDegrade() {
 		logger.Info("[Handle] net is degrade, use go-routine.")
-		ctx,_ := context.WithTimeout(context.Background(), time.Second)
+		ctx, _ := context.WithTimeout(context.Background(), time.Second)
 		err := routine.Start(ctx, func(t *routine.Task) (err error) {
 			degradeProcess(conn)
 			return nil
@@ -29,8 +29,12 @@ func Handle(netConn net.Conn) {
 		}
 		return
 	}
-	conn.epollFd,_ = netpoll.HandleReadOnce(conn.netConn)
+	conn.epollFd, _ = netpoll.HandleReadOnce(conn.netConn)
 	epollStart(conn, time.Second, func(ctx context.Context) error {
+		if deadLine, ok := ctx.Deadline(); ok {
+			conn.SetReadDeadline(deadLine)
+			conn.SetWriteDeadline(deadLine)
+		}
 		msg, err := conn.Read()
 		if err != nil {
 			conn.Close()
@@ -61,6 +65,7 @@ func degradeProcess(conn *storeConn) {
 			logger.Error("[degradeProcess] store execute error. err:%s", err.Error())
 			break
 		}
+		conn.SetWriteDeadline(time.Now().Add(time.Second))
 		conn.Write(result)
 	}
 }

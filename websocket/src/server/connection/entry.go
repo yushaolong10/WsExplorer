@@ -3,7 +3,7 @@ package connection
 import (
 	"context"
 	"github.com/mailru/easygo/netpoll"
-	"logger"
+	"lib/logger"
 	"runtime/debug"
 	"server/routine"
 	"time"

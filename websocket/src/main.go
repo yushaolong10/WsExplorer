@@ -4,7 +4,7 @@ import (
 	"config"
 	"flag"
 	"fmt"
-	"logger"
+	"lib/logger"
 	"server"
 	"server/connection"
 	"server/routine"

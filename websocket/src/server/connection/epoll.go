@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/mailru/easygo/netpoll"
-	"logger"
+	"lib/logger"
 	"server/routine"
 	"time"
 )

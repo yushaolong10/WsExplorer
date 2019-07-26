@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"logger"
+	"lib/logger"
 	"net"
 	"server/connection"
 )
