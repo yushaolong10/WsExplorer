@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"lib/logger"
+	"repo/store"
 	"server"
 )
 
@@ -25,6 +26,11 @@ func main() {
 		return
 	}
 	fmt.Println("logger load success.")
+	if err := store.Init(config.Global.Store.Host); err != nil {
+		fmt.Printf("store init err:%s", err.Error())
+		return
+	}
+	fmt.Println("store load success.")
 	if err := server.Listen(config.Global.Grpc.Addr); err != nil {
 		logger.Error("hub server start error. err:%s", err.Error())
 	}

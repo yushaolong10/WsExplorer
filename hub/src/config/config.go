@@ -21,9 +21,10 @@ type storeConfig struct {
 	Cluster string      `toml:"cluster"`
 	Debug   bool        `toml:"debug"`
 	Env     string      `toml:"env"`
-	Grpc     grpcConf     `toml:"grpc"`
+	Grpc    grpcConf    `toml:"grpc"`
 	Log     logConf     `toml:"log"`
 	Routine routineConf `toml:"routine"`
+	Store   storeConf   `toml:"store"`
 }
 
 type grpcConf struct {
@@ -36,4 +37,8 @@ type logConf struct {
 
 type routineConf struct {
 	MaxGoRoutineCount int `toml:"max_go_routine_count"`
+}
+
+type storeConf struct {
+	Host []string `toml:"host"`
 }

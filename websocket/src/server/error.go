@@ -3,8 +3,8 @@ package server
 import (
 	"lib/json"
 	"lib/logger"
-	"protocol"
 	"net/http"
+	"protocol"
 )
 
 func errNeedToken(w http.ResponseWriter) {

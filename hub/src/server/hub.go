@@ -21,8 +21,8 @@ func (h *HubServer) SendWsRawByte(ctx context.Context, request *hub.WsRequest) (
 		logger.Error("[SendWsRawByte] json unmarshal error. requestId:%s, fromId:%d, data:%s", request.RequestId, request.FromId, reqData)
 		return setHubReply(request.RequestId, 200001, "json unmarshal error"), nil
 	}
-	dataAction,ok := reqMap["action"]
-	if  !ok {
+	dataAction, ok := reqMap["action"]
+	if !ok {
 		logger.Error("[SendWsRawByte] action key not exist. requestId:%s, fromId:%d, data:%s", request.RequestId, request.FromId, reqData)
 		return setHubReply(request.RequestId, 200002, "[action] key not exist"), nil
 
@@ -43,7 +43,7 @@ func (h *HubServer) SendWsRawByte(ctx context.Context, request *hub.WsRequest) (
 
 func (h *HubServer) SendAppData(ctx context.Context, request *hub.AppRequest) (*hub.HubReply, error) {
 	toId := strconv.FormatInt(request.ToId, 10)
-	host, has := store.GetStore(toId)
+	host, has := store.Get(toId)
 	if !has {
 		logger.Error("[SendAppData] store not found toId key:%s", toId)
 		return setHubReply(request.RequestId, 200005, "not found toId cache"), nil
@@ -54,12 +54,11 @@ func (h *HubServer) SendAppData(ctx context.Context, request *hub.AppRequest) (*
 
 }
 
-
 func setHubReply(requestId string, code int32, message string) *hub.HubReply {
 	reply := hub.HubReply{
-		RequestId:requestId,
-		ErrCode:code,
-		Message:message,
+		RequestId: requestId,
+		ErrCode:   code,
+		Message:   message,
 	}
 	return &reply
 }

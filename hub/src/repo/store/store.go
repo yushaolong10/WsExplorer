@@ -1,36 +1,56 @@
 package store
 
 import (
+	"lib/logger"
+	"lib/pool"
 	"repo/store/client"
-	"sync/atomic"
+	"time"
 )
 
-
-var innerStore *Store
+var innerStorePool pool.Pool
 
 func Init(addr []string) error {
-	innerStore = &Store{
-		host:addr,
-		hostCount:uint32(len(addr)),
+	newFunc := func() (object pool.PoolObject, e error) {
+		conn, err := client.NewStoreClient(addr[0])
+		return conn, err
 	}
+	p, err := pool.NewNormalizePool(20, 200, time.Second*10, time.Second*3, newFunc)
+	if err != nil {
+		return err
+	}
+	innerStorePool = p
 	return nil
 }
 
-type Store struct {
-	host []string
-	hostCount uint32
-	connCount uint32
-}
-
-func GetStore(key string) (string, bool) {
-	add := atomic.AddUint32(&innerStore.connCount, 1)
-	addr := innerStore.host[add % innerStore.connCount]
-	storeClient, _ := getConnFromPool(addr)
-	str,has,_ :=  storeClient.Get(key)
+func Get(key string) (string, bool) {
+	object, err := innerStorePool.Acquire()
+	if err != nil {
+		logger.Error("[Get] acquire pool error. err:%s", err.Error())
+		return "", false
+	}
+	conn := object.(*client.StoreClient)
+	str, has, _ := conn.Get(key)
 	return str, has
 }
 
-func getConnFromPool(addr string) (*client.StoreClient,error) {
-	conn,_ := client.NewStoreClient(addr)
-	return conn, nil
+func Delete(key string) bool {
+	object, err := innerStorePool.Acquire()
+	if err != nil {
+		logger.Error("[Delete] acquire pool error. err:%s", err.Error())
+		return false
+	}
+	conn := object.(*client.StoreClient)
+	ret, _ := conn.Delete(key)
+	return ret
+}
+
+func Set(key, val string) bool {
+	object, err := innerStorePool.Acquire()
+	if err != nil {
+		logger.Error("[Set] acquire pool error. err:%s", err.Error())
+		return false
+	}
+	conn := object.(*client.StoreClient)
+	ret, _ := conn.Set(key, val)
+	return ret
 }

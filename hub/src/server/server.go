@@ -8,7 +8,6 @@ import (
 	"protocol/hub"
 )
 
-
 func Listen(addr string) error {
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -17,7 +16,7 @@ func Listen(addr string) error {
 	//register service
 	grpcServer := grpc.NewServer()
 	hub.RegisterHubCenterServer(grpcServer, &HubServer{})
-	
+
 	fmt.Println("hub grpc listen success")
 	logger.Info("hub grpc listen success")
 	return grpcServer.Serve(listener)

@@ -89,8 +89,9 @@ func (c *StoreClient) Delete(key string) (bool, error) {
 	return ret, nil
 }
 
-func (c *StoreClient) Close() {
+func (c *StoreClient) Close() error {
 	if c.conn != nil {
 		c.conn.Close()
 	}
+	return nil
 }
