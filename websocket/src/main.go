@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"lib/logger"
+	"repo/hub"
+	"repo/store"
 	"server"
 	"server/connection"
 	"server/routine"
@@ -38,8 +40,22 @@ func main() {
 		return
 	}
 	fmt.Println("routine init success.")
+	storeConf := config.Global.Store
+	if err := store.Init(storeConf.Host, storeConf.Pool.MinOpen, storeConf.Pool.MaxOpen,
+		storeConf.Pool.MaxLifeTime, storeConf.Pool.Timeout); err != nil {
+		fmt.Printf("store init err:%s", err.Error())
+		return
+	}
+	fmt.Println("store load success.")
+	hubConf := config.Global.Hub
+	if err := hub.Init(hubConf.Host, hubConf.Pool.MinOpen, hubConf.Pool.MaxOpen,
+		hubConf.Pool.MaxLifeTime, hubConf.Pool.Timeout); err != nil {
+		fmt.Printf("hub init err:%s", err.Error())
+		return
+	}
+	fmt.Println("hub load success.")
 	//run
 	fmt.Println("websocket server start...")
 	logger.Info("websocket server start to work")
-	server.Run()
+	server.Start()
 }

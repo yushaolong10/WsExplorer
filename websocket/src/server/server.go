@@ -2,16 +2,32 @@ package server
 
 import (
 	"config"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"lib/logger"
 	"lib/passport"
+	"lib/utils"
 	"net/http"
+	"repo/store"
 	"runtime/debug"
 	"server/connection"
+	"strings"
 	"time"
 )
 
-func Run() {
+var grpcInternalAddr string
+
+func localInit() {
+	interIP, err := utils.GetInternalIP()
+	if err != nil {
+		panic(fmt.Sprintf("get internal ip err:%v", err))
+	}
+	grpcHost := strings.Split(config.Global.Grpc.Addr, ":")
+	grpcInternalAddr = fmt.Sprintf("%s:%s", interIP, grpcHost[1])
+}
+
+func Start() {
+	localInit()
 	httpMux := http.NewServeMux()
 	httpMux.HandleFunc("/ws/conn", wsHandler)
 	err := http.ListenAndServe(config.Global.Http.Addr, httpMux)
@@ -61,6 +77,11 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		Actor:     identifier.Actor,
 		WsConn:    conn,
 		Timestamp: time.Now().Unix(),
+	}
+	if err := store.SetUniqIdGrpcHost(wsconn.UniqId, grpcInternalAddr); err != nil {
+		errStoreSet(w)
+		logger.Error("[wsHandler] ws conn set store error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
+		return
 	}
 	if err := connection.AddWsConn2Pool(wsconn); err != nil {
 		errAddPool(w)

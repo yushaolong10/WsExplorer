@@ -15,7 +15,7 @@ func Init() error {
 	return nil
 }
 
-func Handle(netConn net.Conn) {
+func Handle(netConn net.Conn) error {
 	conn := &storeConn{netConn: netConn}
 	if isNetDegrade() {
 		logger.Info("[Handle] net is degrade, use go-routine.")
@@ -26,11 +26,12 @@ func Handle(netConn net.Conn) {
 		})
 		if err != nil {
 			logger.Error("[Handle] routine start error.err:%s", err.Error())
+			return err
 		}
-		return
+		return nil
 	}
 	conn.epollFd, _ = netpoll.HandleReadOnce(conn.netConn)
-	epollStart(conn, time.Second, func(ctx context.Context) error {
+	handleFunc := func(ctx context.Context) error {
 		if deadLine, ok := ctx.Deadline(); ok {
 			conn.SetReadDeadline(deadLine)
 			conn.SetWriteDeadline(deadLine)
@@ -48,7 +49,8 @@ func Handle(netConn net.Conn) {
 		}
 		conn.Write(result)
 		return nil
-	})
+	}
+	return epollStart(conn, time.Second, handleFunc)
 }
 
 func degradeProcess(conn *storeConn) {

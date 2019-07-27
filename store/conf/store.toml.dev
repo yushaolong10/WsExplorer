@@ -6,14 +6,14 @@ debug = true
 file_path = "./log/store.run.log"
 
 [tcp]
-addr = ":8112"
+addr = ":8280"
 
 [routine]
 max_go_routine_count = 50000
 
 [store]
 key_max_len = 32
-val_max_len = 8
+val_max_len = 32
 split_max_depth = 3
 
 [raft]

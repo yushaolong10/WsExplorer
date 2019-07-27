@@ -40,5 +40,13 @@ type routineConf struct {
 }
 
 type storeConf struct {
-	Host []string `toml:"host"`
+	Host []string  `toml:"host"`
+	Pool storePool `toml:"pool"`
+}
+
+type storePool struct {
+	MinOpen     int `toml:"min_open"`
+	MaxOpen     int `toml:"max_open"`
+	MaxLifeTime int `toml:"max_life_time"`
+	Timeout     int `toml:"timeout"`
 }

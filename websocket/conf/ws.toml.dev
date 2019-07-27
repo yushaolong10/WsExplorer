@@ -8,8 +8,8 @@ file_path = "./log/ws.run.log"
 [http]
 addr = ":8080"
 
-[hub]
-host = ["127.0.0.1:8180"]
+[grpc]
+addr = ":8081"
 
 [connection]
 group_count = 1000
@@ -18,8 +18,18 @@ max_conn_user_count = 1000000
 [routine]
 max_go_routine_count = 10000
 
+[hub]
+host = ["127.0.0.1:8180"]
+        [hub.pool]
+            min_open = 20
+            max_open = 1000
+            max_life_time = 10  #s
+            timeout = 300       #ms
+
 [store]
-host = ["127.0.0.1:8810"]
-pool_enable = true
-pool_conn_count = 1000
-pool_conn_timeout = 60  # second
+host = ["127.0.0.1:8280"]
+        [store.pool]
+            min_open = 20
+            max_open = 1000
+            max_life_time = 10  #s
+            timeout = 300       #ms

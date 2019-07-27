@@ -1,4 +1,4 @@
-## store
+## hubCenter
 
 #### Usage
 ```

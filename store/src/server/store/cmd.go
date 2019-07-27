@@ -1,5 +1,7 @@
 package store
 
+import "lib/logger"
+
 type storeProtocol struct {
 	Err  int                    `json:"err"`
 	Msg  string                 `json:"msg"`
@@ -24,6 +26,7 @@ type setCmd struct {
 
 func (s *setCmd) Do(engine Engine) *storeProtocol {
 	ok := engine.Set(s.Key, s.Val)
+	logger.Info("set key:%s,val:%s; ok:%v", s.Key, s.Val, ok)
 	return &storeProtocol{Err: 0, Data: map[string]interface{}{"set": ok}}
 }
 
@@ -34,6 +37,7 @@ type getCmd struct {
 
 func (g *getCmd) Do(engine Engine) *storeProtocol {
 	val, ok := engine.Get(g.Key)
+	logger.Info("get key:%s; val:%s,ok:%v", g.Key, val, ok)
 	return &storeProtocol{Err: 0, Data: map[string]interface{}{"value": val, "get": ok}}
 }
 
@@ -44,5 +48,6 @@ type delCmd struct {
 
 func (d *delCmd) Do(engine Engine) *storeProtocol {
 	ok := engine.Delete(d.Key)
+	logger.Info("delete key:%s; ok:%v", d.Key, ok)
 	return &storeProtocol{Err: 0, Data: map[string]interface{}{"delete": ok}}
 }

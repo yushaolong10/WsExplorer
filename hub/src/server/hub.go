@@ -43,9 +43,9 @@ func (h *HubServer) SendWsRawByte(ctx context.Context, request *hub.WsRequest) (
 
 func (h *HubServer) SendAppData(ctx context.Context, request *hub.AppRequest) (*hub.HubReply, error) {
 	toId := strconv.FormatInt(request.ToId, 10)
-	host, has := store.Get(toId)
-	if !has {
-		logger.Error("[SendAppData] store not found toId key:%s", toId)
+	host, err := store.Get(toId)
+	if err != nil {
+		logger.Error("[SendAppData] store not found toId key:%s,err:%s", toId, err.Error())
 		return setHubReply(request.RequestId, 200005, "not found toId cache"), nil
 	}
 	//send host

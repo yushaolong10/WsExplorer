@@ -29,7 +29,7 @@ func Monitor(conn *WsConnInfo) error {
 		})
 		return err
 	}
-	fd, _ := netpoll.HandleReadOnce(conn.WsConn.GetNetConn())
+	conn.EpollFd, _ = netpoll.HandleReadOnce(conn.WsConn.GetNetConn())
 	//epoll process
 	//set timeout ws
 	f := func(ctx context.Context) error {
@@ -43,7 +43,6 @@ func Monitor(conn *WsConnInfo) error {
 		}
 		return HandleRead(ctx, conn, message)
 	}
-	conn.EpollFd = fd
 	return epollStart(conn, wsLogicTimeOut, f)
 }
 

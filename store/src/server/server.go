@@ -21,6 +21,8 @@ func Listen(addr string) error {
 			continue
 		}
 		//handle each connect
-		connection.Handle(conn)
+		if err := connection.Handle(conn); err != nil {
+			logger.Error("[Listen] connection.Handle error. err:%s", err.Error())
+		}
 	}
 }

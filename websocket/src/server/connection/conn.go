@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/mailru/easygo/netpoll"
 	"lib/logger"
+	"repo/store"
 	"time"
 )
 
@@ -78,7 +79,8 @@ func (conn *WsConnInfo) Close() (err error) {
 	if err = conn.WsConn.Close(); err != nil {
 		logger.Error("[Close] ws conn close error. uniqId:%d, err:%s", conn.UniqId, err.Error())
 	}
-	//todo
-	//clear redis cache cluster
+	if err = store.DeleteUniqIdGrpcHost(conn.UniqId); err != nil {
+		logger.Error("[Close] delete store host error. uniqId:%d, err:%s", conn.UniqId, err.Error())
+	}
 	return
 }

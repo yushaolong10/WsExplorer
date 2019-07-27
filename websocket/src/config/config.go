@@ -22,13 +22,19 @@ type wsConfig struct {
 	Debug   bool        `toml:"debug"`
 	Env     string      `toml:"env"`
 	Http    httpConf    `toml:"http"`
+	Grpc    grpcConf    `toml:"grpc"`
 	Store   storeConf   `toml:"store"`
+	Hub     hubConf     `toml:"hub"`
 	Log     logConf     `toml:"log"`
 	Conn    connConf    `toml:"connection"`
 	Routine routineConf `toml:"routine"`
 }
 
 type httpConf struct {
+	Addr string `toml:"addr"`
+}
+
+type grpcConf struct {
 	Addr string `toml:"addr"`
 }
 
@@ -46,5 +52,18 @@ type routineConf struct {
 }
 
 type storeConf struct {
-	Host []string `json:"host"`
+	Host []string   `toml:"host"`
+	Pool objectPool `toml:"pool"`
+}
+
+type hubConf struct {
+	Host []string   `toml:"host"`
+	Pool objectPool `toml:"pool"`
+}
+
+type objectPool struct {
+	MinOpen     int `toml:"min_open"`
+	MaxOpen     int `toml:"max_open"`
+	MaxLifeTime int `toml:"max_life_time"`
+	Timeout     int `toml:"timeout"`
 }

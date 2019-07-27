@@ -26,7 +26,9 @@ func main() {
 		return
 	}
 	fmt.Println("logger load success.")
-	if err := store.Init(config.Global.Store.Host); err != nil {
+	storeConf := config.Global.Store
+	if err := store.Init(storeConf.Host, storeConf.Pool.MinOpen, storeConf.Pool.MaxOpen,
+		storeConf.Pool.MaxLifeTime, storeConf.Pool.Timeout); err != nil {
 		fmt.Printf("store init err:%s", err.Error())
 		return
 	}

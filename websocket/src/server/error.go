@@ -53,6 +53,16 @@ func errMonitor(w http.ResponseWriter) {
 	bytes, _ := json.Marshal(resp)
 	_, err := w.Write(bytes)
 	if err != nil {
-		logger.Error("[errAddPool] ws conn monitor err:%s", err.Error())
+		logger.Error("[errMonitor] ws conn monitor err:%s", err.Error())
+	}
+}
+
+func errStoreSet(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusOK)
+	resp := protocol.DefError(100006, "ws store set err.")
+	bytes, _ := json.Marshal(resp)
+	_, err := w.Write(bytes)
+	if err != nil {
+		logger.Error("[errStoreSet] ws store set err:%s", err.Error())
 	}
 }
