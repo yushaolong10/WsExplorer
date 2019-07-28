@@ -9,7 +9,7 @@ import (
 	"repo/store"
 	"server/grpc"
 	"server/http"
-	"server/http/connection"
+	"server/connection"
 	"server/http/routine"
 )
 
