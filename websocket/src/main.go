@@ -7,9 +7,10 @@ import (
 	"lib/logger"
 	"repo/hub"
 	"repo/store"
-	"server"
-	"server/connection"
-	"server/routine"
+	"server/grpc"
+	"server/http"
+	"server/http/connection"
+	"server/http/routine"
 )
 
 var (
@@ -57,5 +58,11 @@ func main() {
 	//run
 	fmt.Println("websocket server start...")
 	logger.Info("websocket server start to work")
-	server.Start()
+	errChan := make(chan error)
+	//start http
+	http.Start(errChan)
+	//start grpc
+	grpc.Start(errChan)
+	err := <-errChan
+	fmt.Printf("server stop. err:%s", err.Error())
 }

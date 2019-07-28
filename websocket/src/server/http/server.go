@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"config"
@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"repo/store"
 	"runtime/debug"
-	"server/connection"
+	"server/http/connection"
 	"strings"
 	"time"
 )
@@ -26,14 +26,15 @@ func localInit() {
 	grpcInternalAddr = fmt.Sprintf("%s:%s", interIP, grpcHost[1])
 }
 
-func Start() {
+func Start(errChan chan<- error) {
 	localInit()
 	httpMux := http.NewServeMux()
 	httpMux.HandleFunc("/ws/conn", wsHandler)
-	err := http.ListenAndServe(config.Global.Http.Addr, httpMux)
-	if err != nil {
-		logger.Error("ListenAndServe: %s", err.Error())
-	}
+	go func() {
+		fmt.Println("http server start...")
+		logger.Info("ListenAndServe addr: %s", config.Global.Http.Addr)
+		errChan <- http.ListenAndServe(config.Global.Http.Addr, httpMux)
+	}()
 }
 
 var upgrader = websocket.Upgrader{
@@ -78,14 +79,14 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		WsConn:    conn,
 		Timestamp: time.Now().Unix(),
 	}
-	if err := store.SetUniqIdGrpcHost(wsconn.UniqId, grpcInternalAddr); err != nil {
-		errStoreSet(w)
-		logger.Error("[wsHandler] ws conn set store error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
-		return
-	}
 	if err := connection.AddWsConn2Pool(wsconn); err != nil {
 		errAddPool(w)
 		logger.Error("[wsHandler] ws conn add pool error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
+		return
+	}
+	if err := store.SetUniqIdGrpcHost(wsconn.UniqId, grpcInternalAddr); err != nil {
+		errStoreSet(w)
+		logger.Error("[wsHandler] ws conn set store error. token:%s, uniqId:%d, err:%s", token, wsconn.UniqId, err.Error())
 		return
 	}
 	if err := connection.Monitor(wsconn); err != nil {

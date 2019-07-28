@@ -7,7 +7,7 @@ func SetUniqIdGrpcHost(uniqId int, host string) error {
 	return Set(key, host)
 }
 
-func GetUniqIdGrpcHost(uniqId int) (string, error) {
+func GetUniqIdGrpcHost(uniqId int64) (string, error) {
 	key := fmt.Sprintf("%d%s", uniqId, "_host_grpc")
 	return Get(key)
 }

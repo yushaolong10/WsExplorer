@@ -5,7 +5,7 @@ import (
 	"github.com/mailru/easygo/netpoll"
 	"lib/logger"
 	"runtime/debug"
-	"server/routine"
+	"server/http/routine"
 	"time"
 )
 

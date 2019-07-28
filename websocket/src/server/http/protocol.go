@@ -1,4 +1,4 @@
-package protocol
+package http
 
 func DefError(code int, msg string) *HttpResponse {
 	return &HttpResponse{

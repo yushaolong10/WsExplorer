@@ -52,16 +52,16 @@ type routineConf struct {
 }
 
 type storeConf struct {
-	Host []string   `toml:"host"`
-	Pool objectPool `toml:"pool"`
+	Host []string `toml:"host"`
+	Pool poolConf `toml:"pool"`
 }
 
 type hubConf struct {
-	Host []string   `toml:"host"`
-	Pool objectPool `toml:"pool"`
+	Host []string `toml:"host"`
+	Pool poolConf `toml:"pool"`
 }
 
-type objectPool struct {
+type poolConf struct {
 	MinOpen     int `toml:"min_open"`
 	MaxOpen     int `toml:"max_open"`
 	MaxLifeTime int `toml:"max_life_time"`

@@ -33,8 +33,8 @@ func (h *HubServer) SendWsRawByte(ctx context.Context, request *hub.WsRequest) (
 		return setHubReply(request.RequestId, 200003, "[action] value not string"), nil
 	}
 	logger.Error("[SendWsRawByte]  request info. requestId:%s, fromId:%d, data:%s", request.RequestId, request.FromId, reqData)
-	if err := service.ParseActionAndExecute(action, request); err != nil {
-		logger.Error("[SendWsRawByte]  ParseActionAndExecute error. requestId:%s, fromId:%d, data:%s, err:%s", request.RequestId, request.FromId, reqData, err.Error())
+	if err := service.Invoke(action, request); err != nil {
+		logger.Error("[SendWsRawByte]  Invoke error. requestId:%s, fromId:%d, data:%s, err:%s", request.RequestId, request.FromId, reqData, err.Error())
 		return setHubReply(request.RequestId, 200004, err.Error()), nil
 
 	}

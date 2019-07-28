@@ -14,7 +14,7 @@ max_go_routine_count = 50000
 [store]
 host = ["127.0.0.1:8280"]
         [store.pool]
-            min_open = 20
+            min_open = 0
             max_open = 1000
             max_life_time = 10  #s
             timeout = 300       #ms
