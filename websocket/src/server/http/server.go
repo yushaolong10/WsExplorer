@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"repo/store"
 	"runtime/debug"
-	"server/http/connection"
+	"server/connection"
 	"strings"
 	"time"
 )

@@ -5,7 +5,7 @@ import (
 	"lib/convert"
 	"lib/logger"
 	"protocol/ws"
-	"server/http/connection"
+	"server/connection"
 )
 
 type WsRpc struct {
